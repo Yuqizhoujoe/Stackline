@@ -1,13 +1,18 @@
-import express, { Request, Response } from 'express';
-import fs from 'fs';
-import path from 'path';
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
+
+app.use(cors());
+
+app.use('/static', express.static(path.join(__dirname, './public')));
 
 // Endpoint to get sales data
-app.get('/sales', (req: Request, res: Response) => {
-    const dataPath = path.join(__dirname, '../data/stackline_frontend_assessment_data_2021.json');
+app.get('/sales', (req, res) => {
+    const dataPath = path.join(__dirname, 'data', 'stackline_frontend_assessment_data_2021.json');
 
     fs.readFile(dataPath, 'utf8', (err, data) => {
         if (err) {
@@ -25,7 +30,6 @@ app.get('/sales', (req: Request, res: Response) => {
     });
 });
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
